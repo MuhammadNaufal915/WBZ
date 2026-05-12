@@ -1,0 +1,96 @@
+/* =====================
+   CTA SECTION
+   ===================== */
+.cta {
+  padding: clamp(6rem, 12vw, 12rem) 0;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 80% at 50% 50%, rgba(255, 85, 0, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cta__inner {
+  position: relative;
+  z-index: 1;
+}
+
+.cta__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+.cta__label::before,
+.cta__label::after {
+  content: '';
+  display: inline-block;
+  width: 30px;
+  height: 1.5px;
+  background: var(--color-accent);
+}
+
+.cta__heading {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 9vw, 10rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: var(--color-text);
+  margin-bottom: 2rem;
+}
+.cta__heading span {
+  color: var(--color-accent);
+  display: block;
+}
+
+.cta__sub {
+  font-size: clamp(0.9rem, 1.2vw, 1rem);
+  color: var(--color-text-secondary);
+  max-width: 480px;
+  margin: 0 auto 3rem;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.cta__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+/* Large CTA button variant */
+.btn-large {
+  padding: 1.1rem 3rem !important;
+  font-size: 0.95rem !important;
+}
+
+/* Decorative text watermark */
+.cta__watermark {
+  position: absolute;
+  bottom: -2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 18vw, 18rem);
+  color: var(--color-text);
+  opacity: 0.02;
+  white-space: nowrap;
+  pointer-events: none;
+  letter-spacing: -0.02em;
+  user-select: none;
+}

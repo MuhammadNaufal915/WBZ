@@ -1,0 +1,104 @@
+import React from 'react';
+import { ArrowUp } from 'lucide-react';
+import '../styles/footer.css';
+
+const footerLinks = {
+  Company: [
+    { label: 'About Us', href: '#about' },
+    { label: 'Our Work', href: '#works' },
+    { label: 'Services', href: '#services' },
+    { label: 'Contact', href: '#contact' },
+  ],
+  Services: [
+    { label: 'Brand Identity', href: '#services' },
+    { label: 'Web Design', href: '#services' },
+    { label: 'Photography', href: '#services' },
+    { label: 'Social Media', href: '#services' },
+  ],
+  Connect: [
+    { label: 'hello@wbzcreative.com', href: 'mailto:hello@wbzcreative.com' },
+    { label: 'WhatsApp', href: '#' },
+    { label: 'Instagram', href: '#' },
+    { label: 'LinkedIn', href: '#' },
+  ],
+};
+
+const socials = [
+  { label: 'Instagram', href: '#' },
+  { label: 'Twitter/X', href: '#' },
+  { label: 'LinkedIn', href: '#' },
+  { label: 'YouTube', href: '#' },
+];
+
+export default function Footer() {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <footer className="footer" id="footer" aria-label="Site footer">
+      <div className="container">
+        <div className="footer__top">
+          {/* Brand col */}
+          <div className="footer__brand">
+            <img
+              src="/images/wbz-logo.png"
+              alt="WBZ Creative Studio"
+              className="footer__logo"
+            />
+            <p className="footer__desc">
+              Where Ideas Become Identity. A creative studio dedicated to building
+              brands that resonate, inspire, and endure.
+            </p>
+            <div className="footer__socials">
+              {socials.map((social) => {
+                return (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    className="footer__social-link"
+                    aria-label={social.label}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {social.label.charAt(0)}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Link cols */}
+          {Object.entries(footerLinks).map(([title, links]) => (
+            <div key={title}>
+              <h3 className="footer__col-title">{title}</h3>
+              <ul className="footer__links" role="list">
+                {links.map((link) => (
+                  <li key={link.label}>
+                    <a href={link.href}>{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom bar */}
+        <div className="footer__bottom">
+          <p className="footer__copy">
+            &copy; {new Date().getFullYear()} <span>WBZ Creative Studio</span>. All rights reserved.
+          </p>
+          <button
+            className="footer__back-top"
+            onClick={scrollToTop}
+            aria-label="Back to top"
+            id="back-to-top"
+          >
+            Back to top
+            <ArrowUp size={14} />
+          </button>
+        </div>
+      </div>
+    </footer>
+  );
+}
