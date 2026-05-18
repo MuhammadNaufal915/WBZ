@@ -1,16 +1,24 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import axios from 'axios';
 import '../styles/about.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
   const sectionRef = useRef(null);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
+    axios.get('/content/about')
+      .then(r => setData(r.data))
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    if (!data) return;
     const ctx = gsap.context(() => {
-      // Animate all .reveal elements
       gsap.utils.toArray('.about .reveal').forEach((el) => {
         gsap.to(el, {
           opacity: 1,
@@ -25,9 +33,11 @@ export default function About() {
         });
       });
 
-      // Stats count up
       gsap.utils.toArray('.about__stat-num').forEach((el) => {
-        const target = parseInt(el.innerText, 10);
+        const text = el.innerText;
+        const target = parseInt(text, 10);
+        if(isNaN(target)) return;
+
         gsap.fromTo(
           el,
           { innerText: 0 },
@@ -50,50 +60,40 @@ export default function About() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [data]);
+
+  if (!data) return <section id="about" className="about section" />;
 
   return (
     <section id="about" className="about section" ref={sectionRef} aria-label="About WBZ">
       <div className="container">
         <div className="about__inner">
-
-          {/* Left — text */}
           <div>
             <div className="about__label reveal">About Us</div>
             <h2 className="about__heading reveal">
-              We Are <span>WBZ</span><br />Creative
+              {data.title.split(' ').map((word, i) => (
+                <React.Fragment key={i}>
+                  {word === 'WBZ' ? <span>WBZ</span> : word}
+                  {i < data.title.split(' ').length - 1 ? ' ' : ''}
+                </React.Fragment>
+              ))}
             </h2>
 
             <div className="about__stats">
-              <div className="about__stat reveal">
-                <div className="about__stat-num">50+</div>
-                <div className="about__stat-label">Projects Done</div>
-              </div>
-              <div className="about__stat reveal">
-                <div className="about__stat-num">30+</div>
-                <div className="about__stat-label">Happy Clients</div>
-              </div>
-              <div className="about__stat reveal">
-                <div className="about__stat-num">2+</div>
-                <div className="about__stat-label">Years Active</div>
-              </div>
+              {data.stats.map((stat, i) => (
+                <div key={i} className="about__stat reveal">
+                  <div className="about__stat-num">{stat.number}</div>
+                  <div className="about__stat-label">{stat.label}</div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Right — body */}
           <div className="about__body">
-            <p className="reveal">
-              WBZ Creative Studio is a full-service creative agency dedicated to building
-              brands that resonate, inspire, and endure. We combine strategy, design, and
-              storytelling to create identities that truly stand out.
-            </p>
-            <p className="reveal">
-              From bold brand identities to immersive digital experiences, every project
-              we touch is crafted with intention, passion, and an unwavering commitment
-              to excellence.
-            </p>
+            {data.description.split('\n').map((para, i) => (
+              <p key={i} className="reveal">{para}</p>
+            ))}
 
-            {/* Visual card */}
             <div className="about__visual reveal" style={{ marginTop: '2rem' }}>
               <img
                 src="/images/wbz-logo.png"
@@ -107,7 +107,6 @@ export default function About() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>

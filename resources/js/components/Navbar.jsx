@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/navbar.css';
 
 const navLinks = [
@@ -65,6 +66,11 @@ export default function Navbar() {
                 Let's Talk
               </a>
             </li>
+            <li>
+              <Link to="/admin/login" className="navbar__admin-link" aria-label="Admin login">
+                Admin
+              </Link>
+            </li>
           </ul>
 
           {/* Hamburger */}
@@ -101,6 +107,10 @@ export default function Navbar() {
         >
           Let's Talk
         </a>
+        <Link to="/admin/login" className="navbar__admin-link" style={{ fontSize: '0.75rem' }}
+          onClick={() => setMenuOpen(false)}>
+          Admin Portal
+        </Link>
       </div>
     </>
   );

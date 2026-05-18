@@ -1,149 +1,90 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import axios from 'axios';
 import '../styles/works.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const works = [
-  {
-    id: 1,
-    title: 'Nexus Brand Identity',
-    tag: 'Branding',
-    bg: '#1a1a1a',
-    accent: '#FF5500',
-  },
-  {
-    id: 2,
-    title: 'Pulse Digital Campaign',
-    tag: 'Social Media',
-    bg: '#111111',
-    accent: '#FF7733',
-  },
-  {
-    id: 3,
-    title: 'Aura Web Experience',
-    tag: 'Web Design',
-    bg: '#161616',
-    accent: '#FF5500',
-  },
-  {
-    id: 4,
-    title: 'Vertex Packaging',
-    tag: 'Print',
-    bg: '#131313',
-    accent: '#FF6622',
-  },
-  {
-    id: 5,
-    title: 'Luna Photography',
-    tag: 'Photography',
-    bg: '#181818',
-    accent: '#FF5500',
-  },
-  {
-    id: 6,
-    title: 'Stride Strategy',
-    tag: 'Strategy',
-    bg: '#141414',
-    accent: '#FF7733',
-  },
-];
-
-function WorkPlaceholder({ bg, accent, title }) {
-  return (
-    <div
-      className="work-placeholder"
-      style={{ background: bg }}
-    >
-      <span
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 'clamp(1.2rem, 3vw, 2.5rem)',
-          color: accent,
-          letterSpacing: '0.1em',
-          textTransform: 'uppercase',
-          opacity: 0.5,
-          textAlign: 'center',
-          padding: '1rem',
-        }}
-      >
-        WBZ
-      </span>
-    </div>
-  );
-}
-
 export default function Works() {
   const sectionRef = useRef(null);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray('.works .reveal').forEach((el) => {
-        gsap.to(el, {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 88%',
-            once: true,
-          },
-        });
-      });
-
-      gsap.utils.toArray('.work-card').forEach((card, i) => {
-        gsap.fromTo(
-          card,
-          { opacity: 0, scale: 0.96 },
-          {
-            opacity: 1,
-            scale: 1,
-            duration: 0.9,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 90%',
-              once: true,
-            },
-          }
-        );
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
+    axios.get('/content/works')
+      .then(r => setData(r.data))
+      .catch(console.error);
   }, []);
 
-  return (
-    <section id="works" className="works" ref={sectionRef} aria-label="Featured works">
-      <div className="container">
-        <header className="works__header">
-          <div>
-            <div className="works__label reveal">Portfolio</div>
-            <h2 className="works__heading reveal">
-              Featured<br />Works
-            </h2>
-          </div>
-          <a href="#contact" className="btn btn-outline reveal" id="works-view-all">
-            View All Projects
-            <ArrowUpRight size={16} />
-          </a>
-        </header>
-      </div>
+  useEffect(() => {
+    if (!data) return;
+    const ctx = gsap.context(() => {
+      gsap.from('.work-card', {
+        opacity: 0,
+        y: 60,
+        duration: 0.9,
+        stagger: 0.15,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.works__grid',
+          start: 'top 85%',
+          once: true,
+        },
+      });
+    }, sectionRef);
+    return () => ctx.revert();
+  }, [data]);
 
-      <div className="container" style={{ maxWidth: '100%', padding: 0 }}>
+  if (!data) return <section id="works" className="works section" />;
+
+  return (
+    <section id="works" className="works section" ref={sectionRef} aria-label="Our Works">
+      <div className="container">
+        <div className="works__header">
+          <div>
+            <div className="works__label reveal">Selected Works</div>
+            <h2 className="works__heading reveal">Featured Projects</h2>
+          </div>
+          <div className="reveal">
+            <a href="#" className="btn btn-outline works__view-all">
+              View All Works
+            </a>
+          </div>
+        </div>
+
         <div className="works__grid">
-          {works.map((work) => (
-            <article key={work.id} className="work-card" tabIndex={0} role="img" aria-label={work.title}>
-              <WorkPlaceholder bg={work.bg} accent={work.accent} title={work.title} />
-              <div className="work-card__overlay">
-                <span className="work-card__tag">{work.tag}</span>
-                <h3 className="work-card__title">{work.title}</h3>
-              </div>
-              <div className="work-card__arrow" aria-hidden="true">
-                <ArrowUpRight size={18} />
+          {data.items.map((work, idx) => (
+            <article key={work.id || idx} className="work-card">
+              <div className="work-card__inner">
+                {/* Image */}
+                <img
+                  src={work.image || '/images/work-placeholder-1.jpg'}
+                  alt={work.title}
+                  className="work-card__img"
+                  loading="lazy"
+                />
+                
+                {/* Overlay details */}
+                <div className="work-card__overlay">
+                  <div className="work-card__content">
+                    <span className="work-card__tag">{work.category}</span>
+                    <h3 className="work-card__title">{work.title}</h3>
+                    
+                    {/* Tags */}
+                    {work.tags && work.tags.length > 0 && (
+                      <div className="work-card__tags">
+                        {work.tags.map(tag => (
+                          <span key={tag} className="work-card__tag">{tag}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="work-card__arrow">
+                    <ArrowRight size={24} />
+                  </div>
+                </div>
               </div>
             </article>
           ))}

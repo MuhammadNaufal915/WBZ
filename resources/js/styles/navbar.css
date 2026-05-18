@@ -154,3 +154,23 @@
   .navbar__links { display: none; }
   .navbar__hamburger { display: flex; }
 }
+
+/* Admin login link — subtle, not distracting */
+.navbar__admin-link {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #2e2e2e;
+  text-decoration: none;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid #1e1e1e;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+}
+.navbar__admin-link:hover {
+  color: var(--color-accent);
+  border-color: rgba(255,85,0,0.3);
+  background: rgba(255,85,0,0.05);
+}
