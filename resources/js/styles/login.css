@@ -1,0 +1,284 @@
+/* =============================================
+   WBZ ADMIN — Login Page Styles
+   ============================================= */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap');
+
+.login-page {
+  min-height: 100vh;
+  background: #080808;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Animated gradient orbs */
+.login-page__orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+  opacity: 0.15;
+  animation: orb-float 8s ease-in-out infinite;
+}
+.login-page__orb--1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #FF5500, transparent);
+  top: -150px;
+  right: -100px;
+  animation-delay: 0s;
+}
+.login-page__orb--2 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, #FF7733, transparent);
+  bottom: -100px;
+  left: -80px;
+  animation-delay: -4s;
+}
+@keyframes orb-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%       { transform: translateY(-30px) scale(1.05); }
+}
+
+/* Grid noise overlay */
+.login-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,85,0,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,85,0,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+/* Card */
+.login-card {
+  position: relative;
+  z-index: 10;
+  background: rgba(17, 17, 17, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 85, 0, 0.15);
+  border-radius: 24px;
+  padding: clamp(2rem, 5vw, 3.5rem);
+  width: 100%;
+  max-width: 460px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.03),
+    0 40px 80px rgba(0,0,0,0.6),
+    0 0 60px rgba(255,85,0,0.06);
+  animation: card-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(40px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Logo */
+.login-card__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+.login-card__logo img {
+  height: 40px;
+  width: auto;
+}
+.login-card__badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #FF5500;
+  background: rgba(255, 85, 0, 0.12);
+  border: 1px solid rgba(255, 85, 0, 0.25);
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+}
+
+/* Heading */
+.login-card__title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  letter-spacing: 0.03em;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+}
+.login-card__subtitle {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 2.5rem;
+}
+
+/* Form */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.login-form__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.login-form__label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #888;
+}
+.login-form__input-wrap {
+  position: relative;
+}
+.login-form__icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #444;
+  pointer-events: none;
+  transition: color 0.2s;
+}
+.login-form__input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 0.9rem 1rem 0.9rem 2.75rem;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.login-form__input:focus {
+  border-color: #FF5500;
+  box-shadow: 0 0 0 3px rgba(255,85,0,0.12);
+  background: rgba(255,85,0,0.04);
+}
+.login-form__input:focus + .login-form__icon,
+.login-form__input-wrap:focus-within .login-form__icon {
+  color: #FF5500;
+}
+.login-form__input::placeholder { color: #333; }
+
+/* Toggle password */
+.login-form__toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #444;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color 0.2s;
+}
+.login-form__toggle:hover { color: #FF5500; }
+
+/* Error */
+.login-form__error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,50,50,0.08);
+  border: 1px solid rgba(255,50,50,0.2);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  animation: shake 0.4s ease;
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25%      { transform: translateX(-6px); }
+  75%      { transform: translateX(6px); }
+}
+
+/* Submit button */
+.login-form__submit {
+  width: 100%;
+  background: #FF5500;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-top: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.login-form__submit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.login-form__submit:hover:not(:disabled) {
+  background: #FF7733;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(255,85,0,0.4);
+}
+.login-form__submit:hover::before { opacity: 1; }
+.login-form__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Loading spinner */
+.login-form__spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Back link */
+.login-card__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #444;
+  text-decoration: none;
+  font-size: 0.8rem;
+  margin-top: 1.75rem;
+  transition: color 0.2s;
+}
+.login-card__back:hover { color: #FF5500; }
+
+/* Footer note */
+.login-card__footer {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #1a1a1a;
+  font-size: 0.75rem;
+  color: #333;
+  text-align: center;
+}
