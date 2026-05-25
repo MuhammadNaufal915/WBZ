@@ -56,6 +56,9 @@
   overflow: hidden;
   cursor: pointer;
   background: var(--color-surface);
+  display: block;
+  text-decoration: none;
+  color: inherit;
 }
 
 .work-card__inner {

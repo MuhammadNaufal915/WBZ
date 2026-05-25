@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight } from 'lucide-react';
@@ -55,7 +56,12 @@ export default function Works() {
 
         <div className="works__grid">
           {data.items.map((work, idx) => (
-            <article key={work.id || idx} className="work-card">
+            <Link
+              key={work.id || idx}
+              to={`/works/${work.id || idx + 1}`}
+              className="work-card"
+              aria-label={`View ${work.title}`}
+            >
               <div className="work-card__inner">
                 {/* Image */}
                 <img
@@ -86,7 +92,7 @@ export default function Works() {
                   </div>
                 </div>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </div>
