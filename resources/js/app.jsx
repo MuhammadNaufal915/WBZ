@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthContext';
 import MainApp from './MainApp.jsx';
 import AdminLogin from './pages/AdminLogin.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
+import WorkDetail from './pages/WorkDetail.jsx';
 import './styles/globals.css';
 
 function App() {
@@ -17,6 +18,9 @@ function App() {
 
           {/* Admin login page */}
           <Route path="/admin/login" element={<AdminLogin />} />
+
+          {/* Work detail page */}
+          <Route path="/works/:id" element={<WorkDetail />} />
 
           {/* Admin dashboard — protected inside the component */}
           <Route path="/admin/*" element={<AdminDashboard />} />

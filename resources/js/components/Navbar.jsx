@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../styles/navbar.css';
 
 const navLinks = [
@@ -12,6 +12,8 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -25,13 +27,31 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
-  const handleNavClick = (href) => {
+  // Handle SPA routing and hash scrolling
+  useEffect(() => {
+    if (location.pathname === '/' && location.hash) {
+      // Delay slightly to ensure Lenis or DOM rendering is ready
+      const timer = setTimeout(() => {
+        const target = document.querySelector(location.hash);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [location]);
+
+  const handleNavClick = (e, href) => {
+    e.preventDefault();
     setMenuOpen(false);
-    const target = document.querySelector(href);
-    if (target) {
-      setTimeout(() => {
+
+    if (location.pathname === '/') {
+      const target = document.querySelector(href);
+      if (target) {
         target.scrollIntoView({ behavior: 'smooth' });
-      }, 300);
+      }
+    } else {
+      navigate('/' + href);
     }
   };
 
@@ -40,19 +60,19 @@ export default function Navbar() {
       <nav id="navbar" className={`navbar${scrolled ? ' scrolled' : ''}`} aria-label="Main navigation">
         <div className="navbar__inner">
           {/* Logo */}
-          <a href="#" className="navbar__logo" aria-label="WBZ Creative Studio">
+          <Link to="/" className="navbar__logo" aria-label="WBZ Creative Studio" onClick={() => setMenuOpen(false)}>
             <img
               src="/images/wbz-logo.png"
               alt="WBZ"
               className="navbar__logo-img"
             />
-          </a>
+          </Link>
 
           {/* Desktop Links */}
           <ul className="navbar__links" role="list">
             {navLinks.map((link) => (
               <li key={link.label}>
-                <a href={link.href} onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}>
+                <a href={link.href} onClick={(e) => handleNavClick(e, link.href)}>
                   {link.label}
                 </a>
               </li>
@@ -61,7 +81,7 @@ export default function Navbar() {
               <a
                 href="#contact"
                 className="btn btn-primary navbar__cta"
-                onClick={(e) => { e.preventDefault(); handleNavClick('#contact'); }}
+                onClick={(e) => handleNavClick(e, '#contact')}
               >
                 Let's Talk
               </a>
@@ -94,7 +114,7 @@ export default function Navbar() {
           <a
             key={link.label}
             href={link.href}
-            onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
+            onClick={(e) => handleNavClick(e, link.href)}
           >
             {link.label}
           </a>
@@ -103,7 +123,7 @@ export default function Navbar() {
           href="#contact"
           className="btn btn-primary"
           style={{ marginTop: '1rem' }}
-          onClick={(e) => { e.preventDefault(); handleNavClick('#contact'); }}
+          onClick={(e) => handleNavClick(e, '#contact')}
         >
           Let's Talk
         </a>

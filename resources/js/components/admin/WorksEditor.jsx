@@ -16,22 +16,43 @@ function Toast({ msg, type, onClose }) {
 }
 
 function WorkModal({ work, onSave, onClose }) {
-  const [form, setForm]       = useState(work || { image: '', title: '', category: '', tags: '' });
-  const [uploading, setUploading] = useState(false);
-  const fileRef = useRef();
+  const [form, setForm] = useState(() => {
+    if (work) {
+      return {
+        image: '',
+        heroImage: '',
+        detailImage: '',
+        title: '',
+        category: '',
+        tags: '',
+        description: '',
+        client: '',
+        year: '',
+        ...work
+      };
+    }
+    return { image: '', heroImage: '', detailImage: '', title: '', category: '', tags: '', description: '', client: '', year: '' };
+  });
+  const [uploading, setUploading] = useState(null); // stores the field currently uploading, e.g. 'image', 'heroImage', 'detailImage'
 
-  const handleUpload = async (e) => {
+  const thumbFileRef = useRef();
+  const heroFileRef = useRef();
+  const detailFileRef = useRef();
+
+  const handleUpload = async (e, field) => {
     const file = e.target.files[0];
     if (!file) return;
-    setUploading(true);
+    setUploading(field);
     const fd = new FormData();
     fd.append('image', file);
     try {
       const res = await axios.post('/admin/upload', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
-      setForm(p => ({ ...p, image: res.data.url }));
+      setForm(p => ({ ...p, [field]: res.data.url }));
     } catch {
       alert('Upload gagal. Coba lagi.');
-    } finally { setUploading(false); }
+    } finally {
+      setUploading(null);
+    }
   };
 
   const handleSave = () => {
@@ -43,9 +64,38 @@ function WorkModal({ work, onSave, onClose }) {
 
   const tagsStr = Array.isArray(form.tags) ? form.tags.join(', ') : form.tags;
 
+  const renderImageField = (label, field, fileRef) => {
+    const isUploading = uploading === field;
+    const value = form[field] || '';
+
+    return (
+      <div className="admin-field" style={{ flex: 1, minWidth: '150px' }}>
+        <label className="admin-label" style={{ fontSize: '0.75rem' }}>{label}</label>
+        <div className="admin-upload-zone" onClick={() => fileRef.current.click()} style={{ minHeight: '100px', padding: '0.5rem' }}>
+          {value ? (
+            <img src={value} alt={label} style={{ maxHeight: '90px', maxWidth: '100%', borderRadius: 6, objectFit: 'cover' }} />
+          ) : (
+            <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
+              <div className="admin-upload-zone__icon" style={{ marginBottom: 0 }}>
+                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <div className="admin-upload-zone__text" style={{ fontSize: '0.7rem', color: '#888' }}>Upload Image</div>
+            </div>
+          )}
+          {isUploading && <div style={{ marginTop: '0.25rem', color: '#FF5500', fontSize: '0.7rem' }}>Uploading...</div>}
+        </div>
+        <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleUpload(e, field)} />
+        {value && (
+          <input className="admin-input" style={{ marginTop: '0.4rem', padding: '0.3rem 0.5rem', fontSize: '0.75rem' }} placeholder="Image URL"
+            value={value} onChange={e => setForm(p => ({ ...p, [field]: e.target.value }))} />
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="admin-modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="admin-modal">
+      <div className="admin-modal" style={{ maxWidth: 680 }}>
         <div className="admin-modal__header">
           <span className="admin-modal__title">{work ? 'Edit Work' : 'Add Work'}</span>
           <button className="admin-modal__close" onClick={onClose}>
@@ -54,34 +104,22 @@ function WorkModal({ work, onSave, onClose }) {
         </div>
         <div className="admin-modal__body">
           <div className="admin-form">
-            {/* Image upload */}
-            <div className="admin-field">
-              <label className="admin-label">Project Image</label>
-              <div className="admin-upload-zone" onClick={() => fileRef.current.click()}>
-                {form.image
-                  ? <img src={form.image} alt="preview" style={{ maxHeight: 140, borderRadius: 8, objectFit: 'cover' }} />
-                  : <>
-                    <div className="admin-upload-zone__icon">
-                      <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                    </div>
-                    <div className="admin-upload-zone__text">Click to upload image</div>
-                    <div className="admin-upload-zone__sub">PNG, JPG up to 5MB</div>
-                  </>
-                }
-                {uploading && <div style={{ marginTop: '0.5rem', color: '#FF5500', fontSize: '0.8rem' }}>Uploading...</div>}
-              </div>
-              <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleUpload} />
-              {form.image && (
-                <input className="admin-input" style={{ marginTop: '0.5rem' }} placeholder="or paste image URL"
-                  value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} />
-              )}
+
+            {/* ── Image Uploads Grid ── */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.2rem' }}>
+              {renderImageField("Thumbnail (Landing Card)", "image", thumbFileRef)}
+              {renderImageField("Hero Banner (Detail Top)", "heroImage", heroFileRef)}
+              {renderImageField("Content Image (Detail About)", "detailImage", detailFileRef)}
             </div>
 
+            {/* ── Title ── */}
             <div className="admin-field">
               <label className="admin-label">Project Title</label>
               <input className="admin-input" placeholder="e.g. Langit Coffee" value={form.title}
                 onChange={e => setForm(p => ({ ...p, title: e.target.value }))} />
             </div>
+
+            {/* ── Category + Tags ── */}
             <div className="admin-form__row">
               <div className="admin-field">
                 <label className="admin-label">Category</label>
@@ -94,11 +132,44 @@ function WorkModal({ work, onSave, onClose }) {
                   onChange={e => setForm(p => ({ ...p, tags: e.target.value }))} />
               </div>
             </div>
+
+            {/* ── Client + Year ── */}
+            <div className="admin-form__row">
+              <div className="admin-field">
+                <label className="admin-label">Client Name</label>
+                <input className="admin-input" placeholder="e.g. Langit Coffee Co." value={form.client || ''}
+                  onChange={e => setForm(p => ({ ...p, client: e.target.value }))} />
+              </div>
+              <div className="admin-field">
+                <label className="admin-label">Year</label>
+                <input className="admin-input" placeholder="e.g. 2024" value={form.year || ''}
+                  onChange={e => setForm(p => ({ ...p, year: e.target.value }))} />
+              </div>
+            </div>
+
+            {/* ── Description ── */}
+            <div className="admin-field">
+              <label className="admin-label">
+                Project Description
+                <span style={{ color: '#444', textTransform: 'none', fontWeight: 400, letterSpacing: 0, marginLeft: '0.4rem' }}>
+                  — ditampilkan di halaman detail
+                </span>
+              </label>
+              <textarea
+                className="admin-input"
+                placeholder="Ceritakan project ini — proses, hasil, dan dampaknya..."
+                rows={4}
+                style={{ resize: 'vertical', lineHeight: 1.7 }}
+                value={form.description || ''}
+                onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
+              />
+            </div>
+
           </div>
         </div>
         <div className="admin-modal__footer">
           <button className="admin-btn admin-btn--secondary" onClick={onClose}>Cancel</button>
-          <button className="admin-btn admin-btn--primary" onClick={handleSave} disabled={uploading}>
+          <button className="admin-btn admin-btn--primary" onClick={handleSave} disabled={!!uploading}>
             {work ? 'Update Work' : 'Add Work'}
           </button>
         </div>
@@ -106,6 +177,7 @@ function WorkModal({ work, onSave, onClose }) {
     </div>
   );
 }
+
 
 export default function WorksEditor() {
   const [items, setItems]     = useState([]);
