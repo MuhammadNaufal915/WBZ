@@ -1,0 +1,128 @@
+/* =====================
+   SCALING VIDEO ON SCROLL
+   ===================== */
+
+.scaling-video-section {
+  position: relative;
+  /* Height controls how long the scroll animation lasts — more = slower expand */
+  height: 350vh;
+  background: var(--color-bg);
+}
+
+/* Sticky wrapper — stays fixed while scroll animation runs */
+.scaling-video__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The video container — this is what scales */
+.scaling-video__container {
+  position: relative;
+  width: 42vw;
+  height: 54vh;
+  border-radius: 16px;
+  overflow: hidden;
+  will-change: width, height, border-radius;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+}
+
+/* The actual video element */
+.scaling-video__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Label above the video box */
+.scaling-video__label {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 6px 12px;
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  z-index: 10;
+}
+.scaling-video__label::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 2px;
+  background: var(--color-accent);
+}
+
+/* Overlay that fades in when video goes fullscreen */
+.scaling-video__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+/* Play icon badge in corner */
+.scaling-video__play-badge {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+
+/* States when animating */
+.scaling-video__sticky.is-expanding .scaling-video__label {
+  opacity: 1;
+  transform: translateY(0);
+}
+.scaling-video__sticky.is-fullscreen .scaling-video__overlay {
+  opacity: 1;
+}
+.scaling-video__sticky.is-fullscreen .scaling-video__play-badge {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .scaling-video__container {
+    width: 70vw;
+    height: 45vh;
+  }
+}
+@media (max-width: 600px) {
+  .scaling-video__container {
+    width: 90vw;
+    height: 35vh;
+    border-radius: 10px;
+  }
+  .scaling-video-section {
+    height: 250vh;
+  }
+}

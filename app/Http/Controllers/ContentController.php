@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ContentController extends Controller
 {
-    private $allowedSections = ['hero', 'about', 'services', 'works'];
+    private $allowedSections = ['hero', 'about', 'works', 'video'];
 
     /**
      * Get content for a specific section.
@@ -45,7 +45,7 @@ class ContentController extends Controller
     }
 
     /**
-     * Upload an image and return the public URL.
+     * Upload an image for Works and return the public URL.
      */
     public function upload(Request $request)
     {
@@ -53,12 +53,59 @@ class ContentController extends Controller
             'image' => 'required|image|max:5120', // 5MB max
         ]);
 
-        $file = $request->file('image');
+        $file     = $request->file('image');
         $filename = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
         $file->move(public_path('uploads/works'), $filename);
 
         return response()->json([
             'url'  => '/uploads/works/' . $filename,
+            'name' => $filename,
+        ]);
+    }
+
+    /**
+     * Upload a video file for the Scaling Video section.
+     * Accepts mp4 / webm, up to 200 MB.
+     */
+    public function uploadVideo(Request $request)
+    {
+        $request->validate([
+            'video' => 'required|file|mimes:mp4,webm,mov,ogg|max:204800', // 200MB max
+        ]);
+
+        if (! is_dir(public_path('uploads/video'))) {
+            mkdir(public_path('uploads/video'), 0775, true);
+        }
+
+        $file     = $request->file('video');
+        $filename = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
+        $file->move(public_path('uploads/video'), $filename);
+
+        return response()->json([
+            'url'  => '/uploads/video/' . $filename,
+            'name' => $filename,
+        ]);
+    }
+
+    /**
+     * Upload a poster/thumbnail image for the video section.
+     */
+    public function uploadPoster(Request $request)
+    {
+        $request->validate([
+            'poster' => 'required|image|max:5120', // 5MB max
+        ]);
+
+        if (! is_dir(public_path('uploads/video'))) {
+            mkdir(public_path('uploads/video'), 0775, true);
+        }
+
+        $file     = $request->file('poster');
+        $filename = 'poster_' . time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
+        $file->move(public_path('uploads/video'), $filename);
+
+        return response()->json([
+            'url'  => '/uploads/video/' . $filename,
             'name' => $filename,
         ]);
     }
@@ -84,15 +131,11 @@ class ContentController extends Controller
                     ['number' => '5+',  'label' => 'Years Experience'],
                 ],
             ],
-            'services' => [
-                'items' => [
-                    ['id' => 1, 'icon' => 'Palette',      'title' => 'Brand Identity',   'description' => 'Logo design, visual identity systems, brand guidelines, and everything that makes your brand unforgettable.'],
-                    ['id' => 2, 'icon' => 'Monitor',      'title' => 'Web Design',        'description' => 'Stunning, conversion-focused websites that are as beautiful as they are functional.'],
-                    ['id' => 3, 'icon' => 'Camera',       'title' => 'Photography',       'description' => 'Product, lifestyle, and brand photography that tells your story with authenticity.'],
-                    ['id' => 4, 'icon' => 'Film',         'title' => 'Motion Design',     'description' => 'Animations, video intros, and dynamic visuals that bring your brand to life.'],
-                    ['id' => 5, 'icon' => 'PenTool',      'title' => 'Print Design',      'description' => 'Brochures, packaging, posters, and print materials crafted with precision.'],
-                    ['id' => 6, 'icon' => 'TrendingUp',   'title' => 'Social Media',      'description' => 'Content strategy and design assets that grow your audience and build community.'],
-                ],
+            'video' => [
+                'type'   => 'url',
+                'src'    => 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+                'poster' => '',
+                'label'  => 'WBZ Showreel',
             ],
             'works' => [
                 'items' => [

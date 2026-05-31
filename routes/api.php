@@ -11,8 +11,14 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
+use App\Http\Controllers\RatingController;
+
 // ─── Public Content (Landing Page reads) ─────────────────────────────────────
 Route::get('/content/{section}', [ContentController::class, 'show']);
+
+// ─── Public Ratings ───────────────────────────────────────────────────────────
+Route::get('/ratings', [RatingController::class, 'index']);
+Route::post('/ratings', [RatingController::class, 'store']);
 
 // ─── Admin Auth ───────────────────────────────────────────────────────────────
 Route::post('/admin/login', [AdminAuthController::class, 'login']);
@@ -26,4 +32,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Content management
     Route::put('/admin/content/{section}', [ContentController::class, 'update']);
     Route::post('/admin/upload',           [ContentController::class, 'upload']);
+    Route::post('/admin/upload-video',     [ContentController::class, 'uploadVideo']);
+    Route::post('/admin/upload-poster',    [ContentController::class, 'uploadPoster']);
+
+    // Ratings management
+    Route::delete('/admin/ratings/{id}',   [RatingController::class, 'destroy']);
 });
