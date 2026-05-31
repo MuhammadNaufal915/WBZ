@@ -3,13 +3,13 @@ import '../styles/marquee.css';
 
 const items = [
   { text: 'WBZ', accent: true },
-  { text: 'Creative Studio' },
-  { text: 'Branding', accent: true },
-  { text: 'Web Design' },
-  { text: 'Visual Identity', accent: true },
-  { text: 'Photography' },
-  { text: 'Content Creation', accent: true },
-  { text: 'Strategy' },
+  { text: 'Experience' },
+  { text: 'WBZ', accent: true },
+  { text: 'Experience' },
+  { text: 'WBZ', accent: true },
+  { text: 'Experience' },
+  { text: 'WBZ', accent: true },
+  { text: 'Experience' },
 ];
 
 export default function Marquee() {

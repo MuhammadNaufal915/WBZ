@@ -1,33 +1,46 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Navigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/login.css';
 
 export default function AdminLogin() {
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [error, setError]       = useState('');
-  const [loading, setLoading]   = useState(false);
+  const [formLoading, setFormLoading]   = useState(false);
 
+  // Still checking token — show a neutral dark loader, not the login form
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#080808', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ width: 36, height: 36, border: '3px solid #1e1e1e', borderTopColor: '#FF5500', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 1rem' }} />
+          <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+          <p style={{ color: '#333', fontSize: '0.8rem', letterSpacing: '0.1em' }}>LOADING...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Already logged in — redirect straight to dashboard
   if (isAuthenticated) {
-    navigate('/admin', { replace: true });
-    return null;
+    return <Navigate to="/admin" replace />;
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
+    setFormLoading(true);
     try {
       await login(email, password);
       navigate('/admin', { replace: true });
     } catch (err) {
       setError(err?.response?.data?.message || 'Terjadi kesalahan. Coba lagi.');
     } finally {
-      setLoading(false);
+      setFormLoading(false);
     }
   };
 
@@ -83,9 +96,9 @@ export default function AdminLogin() {
             </div>
           </div>
 
-          <button type="submit" id="admin-login-btn" className="login-form__submit" disabled={loading}>
-            {loading && <span className="login-form__spinner" aria-hidden="true" />}
-            {loading ? 'Signing In...' : 'Sign In to Dashboard'}
+          <button type="submit" id="admin-login-btn" className="login-form__submit" disabled={formLoading}>
+            {formLoading && <span className="login-form__spinner" aria-hidden="true" />}
+            {formLoading ? 'Signing In...' : 'Sign In to Dashboard'}
           </button>
         </form>
 

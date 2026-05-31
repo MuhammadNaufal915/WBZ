@@ -71,8 +71,8 @@ Semua file ini berada di `resources/js/components/`:
    - **Fitur Khusus:** Desain bergaya *Masonry* (kotak-kotak dengan ukuran berbeda, seperti Pinterest). Saat gambar di-hover, nama proyek akan muncul perlahan dari bawah dengan gradient gelap agar teks mudah dibaca.
 
 7. **`CTA.jsx` (Call to Action)**
-   - **Tujuan:** Mengajak klien menghubungi WBZ.
-   - **Fitur Khusus:** Desain teks "Let's Work Together" yang sangat besar dan tombol aksi (Email & WhatsApp).
+   - **Tujuan:** Mengajak klien menghubungi WBZ dan mengumpulkan umpan balik (*feedback*).
+   - **Fitur Khusus:** Desain teks "Let's Work Together" yang sangat besar dan tombol aksi. Di sini juga ditambahkan **Sistem Rating & Testimonial Interaktif**. Pengunjung bisa memunculkan form pop-up untuk memberi rating (1-5 bintang) beserta ulasannya. Ulasan yang sudah dikirim akan langsung divisualisasikan dalam bentuk animasi *Marquee* (kartu berjalan) di bagian atas tombol aksi.
 
 8. **`Footer.jsx`**
    - **Tujuan:** Bagian terbawah website.
@@ -115,5 +115,43 @@ Untuk memenuhi kebutuhan *update* konten tanpa perlu mengubah kodingan, telah di
    - **`AboutEditor.jsx`:** Mengubah deskripsi profil agensi dan mengatur daftar statistik dinamis (misal jumlah klien/proyek).
    - **`ServicesEditor.jsx`:** Menambah, mengedit, atau menghapus layanan/jasa. Dilengkapi dengan antarmuka modal (pop-up) untuk memilih ikon SVG.
    - **`WorksEditor.jsx`:** Mengatur galeri portofolio, mendukung fungsi *upload* gambar baru secara *drag-and-drop/click*, dan mengelola tag kategori proyek.
+   - **`RatingsManager.jsx`:** Antarmuka khusus bagi admin untuk melihat, memoderasi, dan menghapus ulasan (*rating/review*) yang dikirimkan oleh pengunjung melalui form di bagian CTA. Modul ini adalah satu-satunya fitur yang terhubung langsung ke Database SQL murni (Tabel `ratings`).
    - **`SettingsPanel.jsx`:** Fitur bagi admin untuk mengubah *password* keamanan mereka.
 5. **Dinamisasi Komponen UI Landing Page:** File komponen *landing page* (`Hero.jsx`, `About.jsx`, `Services.jsx`, `Works.jsx`) yang sebelumnya berisi *hardcoded* teks (statis), kini telah direvisi menggunakan `useEffect` + Axios untuk memanggil *endpoint* API (`/api/content/...`). Sehingga, setiap ada perubahan pada Admin Panel, *Landing Page* otomatis berubah.
+
+---
+
+## 7. Pembaruan Lanjutan & Perbaikan Bug Terakhir
+
+### Perbaikan Tampilan Blank (Layar Hitam)
+- **Akar Masalah:** Terjadi duplikasi prefix path API (`/api/api/content/...`) saat React mengambil data dari Laravel. Hal ini menyebabkan respon 404 dari server, yang dialihkan ke halaman default HTML (`welcome.blade.php`). React mencoba memecah (split) HTML string tersebut karena mengiranya JSON, yang berujung pada Fatal Error (Crash) dan me-rendernya menjadi layar hitam.
+- **Solusi:** Menghapus prefix `/api` dari _endpoint fetch_ (`axios.get`) di dalam `Hero.jsx`, `About.jsx`, `Services.jsx`, dan `Works.jsx`. Hal ini menyelesaikan masalah sinkronisasi *backend-frontend* karena *base URL* Axios sudah dikonfigurasi otomatis ke `/api` dari `AuthContext.jsx`.
+
+### Perbaikan Desain & *Grid Layout* yang Rusak
+- **Akar Masalah:** Desain komponen **Services** dan **Works** sempat berantakan karena adanya perbedaan *class name* antara versi CSS murni (`service-card`) dengan *class name* yang ditulis di dalam React murni (`services__card`).
+- **Solusi:** Menyesuaikan kembali seluruh penulisan variabel CSS class pada `Services.jsx` dan `Works.jsx` agar sama persis dengan spesifikasi di `services.css` dan `works.css`. *Padding* dan *hover effect* sudah berhasil dikembalikan.
+
+### Perbaikan Bug HMR Infinite Reload
+- **Akar Masalah:** Vite Development Server sempat dijalankan di latar belakang (background) menggunakan `npm run dev`, sehingga meninggalkan *file* *pointer* `public/hot`. Hal ini membuat *website* pada versi production diakses me-reload sendiri mencari port Vite Dev Server.
+- **Solusi:** Menghapus _file_ `public/hot` dan melakukan `npm run build` ulang agar React sepenuhnya menggunakan _file production build_ yang solid dan stabil.
+
+### Dinamisasi Statistik Pada Hero Section
+- **Akar Masalah:** Angka statistik "50+ Projects", "30+ Clients", dan "2+ Years" di Hero (`Hero.jsx`) sebelumnya bersifat **statis** (hardcoded), sehingga tidak sinkron ketika Admin mengubah data lewat *dashboard* (yang sebelumnya hanya berefek di komponen `About.jsx`).
+- **Solusi:** Melakukan *fetch* berlapis pada `Hero.jsx` untuk mengambil data JSON yang bersumber langsung dari _endpoint_ `/content/about`, sehingga jika data dari Admin berubah, maka secara simultan tampilan Hero dan About akan menampilkan angka yang sama.
+
+---
+
+## 8. Scaling Video on Scroll (Perombakan Besar)
+
+Pada iterasi ini, dilakukan perombakan besar di mana **Services Section** (komponen, CSS, dan admin editor-nya) dihapus secara permanen untuk memberikan ruang pada desain yang lebih sinematik.
+
+### 1. Komponen Baru (`ScalingVideo.jsx`)
+- Menggantikan posisi komponen `Services`.
+- **Fitur Animasi:** Menggunakan efek **GSAP ScrollTrigger (Scrub)**, di mana video bermula sebagai sebuah kotak kecil melengkung di tengah layar, kemudian saat di-scroll ke bawah, kotak tersebut secara perlahan mengembang hingga menjadi *fullscreen* (layar penuh) menutupi seluruh website.
+- **Overlay Dinamis:** Menambahkan elemen transisi mulus seperti teks *Label* yang muncul, bayangan (*gradient overlay*), dan ikon **Play** di sudut kanan bawah.
+
+### 2. Modul Admin Baru (`VideoEditor.jsx`)
+- Fitur **Services** di *sidebar dashboard* telah diubah menjadi **Showreel Video**.
+- Admin dapat mengganti video dengan **Direct Upload** (mengunggah file video lokal `.mp4`, `.webm` langsung ke server WBZ dengan kapasitas maksimum yang telah dinaikkan hingga **200 MB** per file).
+- Admin juga dapat mengunggah **Poster Thumbnail** khusus yang akan muncul sebelum video berputar.
+- Data disimpan di `storage/app/content/video.json`.

@@ -6,7 +6,6 @@ const footerLinks = {
   Company: [
     { label: 'About Us', href: '#about' },
     { label: 'Our Work', href: '#works' },
-    { label: 'Services', href: '#services' },
     { label: 'Contact', href: '#contact' },
   ],
   Services: [
@@ -16,18 +15,18 @@ const footerLinks = {
     { label: 'Social Media', href: '#services' },
   ],
   Connect: [
-    { label: 'hello@wbzcreative.com', href: 'mailto:hello@wbzcreative.com' },
+    { label: '@wbzclubhouse@gmail.com', href: 'mailto:wbzclubhouse@gmail.com' },
     { label: 'WhatsApp', href: '#' },
-    { label: 'Instagram', href: '#' },
-    { label: 'LinkedIn', href: '#' },
+    { label: 'Instagram', href: 'https://www.instagram.com/wbzexperience?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==' },
+    { label: 'YouTube', href: 'https://youtube.com/@wbzexperience?si=m6mm_FVmzuzAJ767' },
+    { label: 'SoundCloud', href: 'https://soundcloud.com/wbz-811374487?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing' },
   ],
 };
 
 const socials = [
-  { label: 'Instagram', href: '#' },
-  { label: 'Twitter/X', href: '#' },
-  { label: 'LinkedIn', href: '#' },
-  { label: 'YouTube', href: '#' },
+  { label: 'Instagram', href: 'https://www.instagram.com/wbzexperience?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==' },
+  { label: 'Twitter/X', href: 'https://twitter.com/wbzexperience' },
+  { label: 'YouTube', href: 'https://youtube.com/@wbzexperience?si=m6mm_FVmzuzAJ767' },
 ];
 
 export default function Footer() {
@@ -47,8 +46,7 @@ export default function Footer() {
               className="footer__logo"
             />
             <p className="footer__desc">
-              Where Ideas Become Identity. A creative studio dedicated to building
-              brands that resonate, inspire, and endure.
+              WBZ is a Bandung-based collective showcasing events, music, and street culture
             </p>
             <div className="footer__socials">
               {socials.map((social) => {
@@ -86,7 +84,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="footer__bottom">
           <p className="footer__copy">
-            &copy; {new Date().getFullYear()} <span>WBZ Creative Studio</span>. All rights reserved.
+            &copy; {new Date().getFullYear()} <span>WBZ Experience</span>. All rights reserved.
           </p>
           <button
             className="footer__back-top"

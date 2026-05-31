@@ -5,17 +5,19 @@ import Sidebar from '../components/admin/Sidebar';
 import DashOverview from '../components/admin/DashOverview';
 import HeroEditor from '../components/admin/HeroEditor';
 import AboutEditor from '../components/admin/AboutEditor';
-import ServicesEditor from '../components/admin/ServicesEditor';
+import VideoEditor from '../components/admin/VideoEditor';
 import WorksEditor from '../components/admin/WorksEditor';
 import SettingsPanel from '../components/admin/SettingsPanel';
+import RatingsManager from '../components/admin/RatingsManager';
 import '../styles/admin.css';
 
 const PAGE_TITLES = {
   overview: { title: 'Dashboard',      crumb: 'Admin / Overview' },
   hero:     { title: 'Hero Section',   crumb: 'Admin / Content / Hero' },
   about:    { title: 'About Section',  crumb: 'Admin / Content / About' },
-  services: { title: 'Services',        crumb: 'Admin / Content / Services' },
+  video:    { title: 'Showreel Video',  crumb: 'Admin / Content / Video' },
   works:    { title: 'Portfolio Works', crumb: 'Admin / Content / Works' },
+  ratings:  { title: 'Ratings',         crumb: 'Admin / Ratings' },
   settings: { title: 'Settings',        crumb: 'Admin / Settings' },
 };
 
@@ -45,8 +47,9 @@ export default function AdminDashboard() {
     switch (active) {
       case 'hero':     return <HeroEditor />;
       case 'about':    return <AboutEditor />;
-      case 'services': return <ServicesEditor />;
+      case 'video':    return <VideoEditor />;
       case 'works':    return <WorksEditor />;
+      case 'ratings':  return <RatingsManager />;
       case 'settings': return <SettingsPanel />;
       default:         return <DashOverview onNavigate={setActive} />;
     }

@@ -14,10 +14,15 @@ export default function Hero() {
   const statsRef = useRef(null);
 
   const [data, setData] = useState(null);
+  const [aboutData, setAboutData] = useState(null);
 
   useEffect(() => {
     axios.get('/content/hero')
       .then(r => setData(r.data))
+      .catch(console.error);
+      
+    axios.get('/content/about')
+      .then(r => setAboutData(r.data))
       .catch(console.error);
   }, []);
 
@@ -134,23 +139,31 @@ export default function Hero() {
         <span className="hero__scroll-text">Scroll</span>
       </div>
 
-      {/* Note: The old stats are now handled in About. We'll leave them hidden or hardcoded here or read from about if needed.
-          Since the design has stats in hero, I'll keep them static for hero or load them. 
-          Actually, I'll fetch About data for these stats, or keep them static to not overcomplicate, 
-          but wait, earlier the hero had stats. We can leave them hardcoded in Hero as it's just visual. */}
+      {/* Stats fetched from About data */}
       <div ref={statsRef} className="hero__stats" aria-label="Studio statistics">
-        <div className="hero__stat">
-          <div className="hero__stat-num">50+</div>
-          <div className="hero__stat-label">Projects</div>
-        </div>
-        <div className="hero__stat">
-          <div className="hero__stat-num">30+</div>
-          <div className="hero__stat-label">Clients</div>
-        </div>
-        <div className="hero__stat">
-          <div className="hero__stat-num">2+</div>
-          <div className="hero__stat-label">Years</div>
-        </div>
+        {aboutData ? (
+          aboutData.stats.slice(0, 3).map((stat, i) => (
+            <div key={i} className="hero__stat">
+              <div className="hero__stat-num">{stat.number}</div>
+              <div className="hero__stat-label">{stat.label}</div>
+            </div>
+          ))
+        ) : (
+          <>
+            <div className="hero__stat">
+              <div className="hero__stat-num">50+</div>
+              <div className="hero__stat-label">Projects</div>
+            </div>
+            <div className="hero__stat">
+              <div className="hero__stat-num">30+</div>
+              <div className="hero__stat-label">Clients</div>
+            </div>
+            <div className="hero__stat">
+              <div className="hero__stat-num">2+</div>
+              <div className="hero__stat-label">Years</div>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );
