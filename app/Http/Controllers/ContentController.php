@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ContentController extends Controller
 {
-    private $allowedSections = ['hero', 'about', 'works', 'video'];
+    private $allowedSections = ['hero', 'about', 'works', 'video', 'events'];
 
     /**
      * Get content for a specific section.
@@ -145,6 +145,40 @@ class ContentController extends Controller
                     ['id' => 4, 'image' => '/images/work-placeholder-4.jpg', 'title' => 'Mentari Skincare',       'category' => 'Photography',    'tags' => ['Photo', 'Social']],
                     ['id' => 5, 'image' => '/images/work-placeholder-5.jpg', 'title' => 'Archipelago Ventures',   'category' => 'Brand Identity', 'tags' => ['Branding', 'Motion']],
                 ],
+            ],
+            'events' => [
+                'items' => [
+                    [
+                        'id' => 1,
+                        'title' => 'WBZ Block Party: Vol. 5',
+                        'date_day' => '12',
+                        'date_month' => 'JUN',
+                        'time' => '17:00 - LATE',
+                        'location' => 'Laswi Heritage, Bandung',
+                        'desc' => 'Our annual street block party returns with live street art, local rap collectives, and exclusive merch drop.',
+                        'status' => 'active'
+                    ],
+                    [
+                        'id' => 2,
+                        'title' => 'Clubhouse Sessions: Electronic Soundscape',
+                        'date_day' => '27',
+                        'date_month' => 'JUN',
+                        'time' => '20:00 - 02:00',
+                        'location' => 'WBZ HQ, Bandung',
+                        'desc' => 'An intimate club night showcasing underground house, techno, and ambient electronic artists.',
+                        'status' => 'active'
+                    ],
+                    [
+                        'id' => 3,
+                        'title' => 'Street Culture Exhibition & Talk',
+                        'date_day' => '08',
+                        'date_month' => 'JUL',
+                        'time' => '14:00 - 18:00',
+                        'location' => 'Selasar Sunaryo Art Space, Bandung',
+                        'desc' => 'A panel discussion and showcase of visual arts, skateboarding photography, and zine culture in Bandung.',
+                        'status' => 'finished'
+                    ]
+                ]
             ],
         ];
 

@@ -99,7 +99,7 @@ export default function Hero() {
       <div className="hero__content">
         <div ref={labelRef} className="hero__label">
           <span className="hero__label-dot" />
-          WBZ Creative Studio — Est. 2024
+          WBZ Experience — Est. 2024
         </div>
 
         <h1 className="hero__headline">

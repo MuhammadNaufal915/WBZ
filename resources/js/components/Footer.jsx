@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowUp } from 'lucide-react';
 import '../styles/footer.css';
 
@@ -8,15 +9,9 @@ const footerLinks = {
     { label: 'Our Work', href: '#works' },
     { label: 'Contact', href: '#contact' },
   ],
-  Services: [
-    { label: 'Brand Identity', href: '#services' },
-    { label: 'Web Design', href: '#services' },
-    { label: 'Photography', href: '#services' },
-    { label: 'Social Media', href: '#services' },
-  ],
   Connect: [
     { label: '@wbzclubhouse@gmail.com', href: 'mailto:wbzclubhouse@gmail.com' },
-    { label: 'WhatsApp', href: '#' },
+    { label: 'WhatsApp', href: 'https://wa.me/+628815279415' },
     { label: 'Instagram', href: 'https://www.instagram.com/wbzexperience?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==' },
     { label: 'YouTube', href: 'https://youtube.com/@wbzexperience?si=m6mm_FVmzuzAJ767' },
     { label: 'SoundCloud', href: 'https://soundcloud.com/wbz-811374487?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing' },
@@ -86,6 +81,9 @@ export default function Footer() {
           <p className="footer__copy">
             &copy; {new Date().getFullYear()} <span>WBZ Experience</span>. All rights reserved.
           </p>
+          <Link to="/admin/login" className="footer__admin-link" aria-label="Admin Portal">
+            Admin Portal
+          </Link>
           <button
             className="footer__back-top"
             onClick={scrollToTop}
