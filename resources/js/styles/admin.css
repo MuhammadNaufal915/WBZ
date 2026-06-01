@@ -232,7 +232,11 @@
   box-shadow: 0 0 0 3px rgba(255,85,0,0.1);
 }
 .admin-textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
-.admin-select option { background: #111; }
+.admin-select option,
+select.admin-input option {
+  background: #111;
+  color: #fff;
+}
 
 /* Buttons */
 .admin-btn {

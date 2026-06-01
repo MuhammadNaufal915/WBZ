@@ -7,6 +7,7 @@ import HeroEditor from '../components/admin/HeroEditor';
 import AboutEditor from '../components/admin/AboutEditor';
 import VideoEditor from '../components/admin/VideoEditor';
 import WorksEditor from '../components/admin/WorksEditor';
+import EventsEditor from '../components/admin/EventsEditor';
 import SettingsPanel from '../components/admin/SettingsPanel';
 import RatingsManager from '../components/admin/RatingsManager';
 import '../styles/admin.css';
@@ -17,6 +18,7 @@ const PAGE_TITLES = {
   about:    { title: 'About Section',  crumb: 'Admin / Content / About' },
   video:    { title: 'Showreel Video',  crumb: 'Admin / Content / Video' },
   works:    { title: 'Portfolio Works', crumb: 'Admin / Content / Works' },
+  events:   { title: 'Events Calendar', crumb: 'Admin / Content / Events' },
   ratings:  { title: 'Ratings',         crumb: 'Admin / Ratings' },
   settings: { title: 'Settings',        crumb: 'Admin / Settings' },
 };
@@ -49,6 +51,7 @@ export default function AdminDashboard() {
       case 'about':    return <AboutEditor />;
       case 'video':    return <VideoEditor />;
       case 'works':    return <WorksEditor />;
+      case 'events':   return <EventsEditor />;
       case 'ratings':  return <RatingsManager />;
       case 'settings': return <SettingsPanel />;
       default:         return <DashOverview onNavigate={setActive} />;

@@ -145,7 +145,7 @@ export default function CTA() {
               RATING US
             </button>
             <a
-              href="https://wa.me/62xxxxxxxxxx"
+              href="https://wa.me/+628815279415"
               target="_blank" rel="noopener noreferrer"
               id="cta-whatsapp-btn"
               className="btn btn-outline btn-large"

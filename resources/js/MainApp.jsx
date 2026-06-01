@@ -6,6 +6,7 @@ import Marquee from './components/Marquee';
 import About from './components/About';
 import ScalingVideo from './components/ScalingVideo';
 import Works from './components/Works';
+import Events from './components/Events';
 import CTA from './components/CTA';
 import Footer from './components/Footer';
 
@@ -42,6 +43,7 @@ export default function MainApp() {
         <About />
         <ScalingVideo />
         <Works />
+        <Events />
         <CTA />
       </main>
 
